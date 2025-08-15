@@ -21,7 +21,7 @@ public static class DisconnectHandlerHelper
     static DisconnectHandlerHelper()
     {
         var policyBindableProperty =
-            typeof(Button).Assembly.GetType("Microsoft.Maui.Controls.HandlerProperties")?.GetField("DisconnectPolicyProperty", BindingFlags.Static | BindingFlags.Public)?.GetValue(null) as BindableProperty;
+            typeof(Button).Assembly.GetType("Microsoft.Maui.Controls.HandlerProperties")?.GetField("DisconnectPolicyProperty", BindingFlags.Static | BindingFlags.Public)?.GetValue(default) as BindableProperty;
 
         _disconnectPolicyProperty = policyBindableProperty ?? HandlerPropertiesBackport.DisconnectPolicyBackportProperty;
     }
@@ -40,7 +40,7 @@ public static class DisconnectHandlerHelper
 
     public static void DisconnectHandlers(IView view)
     {
-        if (view is VisualElement { IsLoaded: true } && _onUnloaded is not null)
+        if (view is VisualElement { IsLoaded: true } && _onUnloaded is not default(Func<IElement, Action, IDisposable>))
         {
             _onUnloaded(view, () =>
             {

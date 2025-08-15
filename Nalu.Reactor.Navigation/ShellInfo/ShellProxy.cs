@@ -13,12 +13,12 @@ internal partial class ShellProxy : IShellProxy, IDisposable
     private readonly HashSet<string> _registeredSegments = [];
     private readonly List<ShellItemProxy> _items;
 
-    private Dictionary<string, IShellContentProxy> _contentsBySegmentName = null!;
+    private Dictionary<string, IShellContentProxy> _contentsBySegmentName = default!;
     private string? _navigationTarget;
     private bool _contentChanged;
     private IShellSectionProxy? _navigationCurrentSection;
 
-    public IShellItemProxy CurrentItem { get; private set; } = null!;
+    public IShellItemProxy CurrentItem { get; private set; } = default!;
     public IReadOnlyList<IShellItemProxy> Items => _items;
     public string Location => _shell.CurrentState.Location.OriginalString;
     public string State => "//" + string.Join("/", CurrentItem.CurrentSection.GetNavigationStack(_serviceProvider).Select(p => p.SegmentName));
@@ -55,7 +55,7 @@ internal partial class ShellProxy : IShellProxy, IDisposable
 
     public bool BeginNavigation()
     {
-        if (_navigationTarget is not null)
+        if (_navigationTarget is not default(string))
         {
             // Already inside a batch
             return false;
@@ -75,7 +75,7 @@ internal partial class ShellProxy : IShellProxy, IDisposable
         return !args.Canceled;
     }
 
-    public async Task CommitNavigationAsync(Action? completeAction = null)
+    public async Task CommitNavigationAsync(Action? completeAction = default)
     {
         if (_navigationTarget is not { } targetState || targetState == _shell.CurrentState.Location.OriginalString)
         {
@@ -85,9 +85,9 @@ internal partial class ShellProxy : IShellProxy, IDisposable
         }
 
         var contentChanged = _contentChanged;
-        _navigationTarget = null;
+        _navigationTarget = default;
         _contentChanged = false;
-        _navigationCurrentSection = null;
+        _navigationCurrentSection = default;
 
         var currentState = _shell.CurrentState.Location.OriginalString;
         var currentContentState = TrimRouteToContent(currentState);
@@ -149,7 +149,7 @@ internal partial class ShellProxy : IShellProxy, IDisposable
 
     public Task PushAsync(string segmentName, MauiReactor.Component component, Action<object> propsInit)
     {
-        if (_navigationTarget == null)
+        if (_navigationTarget is default(string))
         {
             throw new NotSupportedException("PushAsync is not supported outside of a navigation batch");
         }
@@ -172,9 +172,9 @@ internal partial class ShellProxy : IShellProxy, IDisposable
         return Task.CompletedTask;
     }
 
-    public Task PopAsync(IShellSectionProxy? section = null)
+    public Task PopAsync(IShellSectionProxy? section = default)
     {
-        if (_navigationTarget == null)
+        if (_navigationTarget is default(string))
         {
             throw new NotSupportedException("PopAsync is not supported outside of a navigation batch");
         }
@@ -198,7 +198,7 @@ internal partial class ShellProxy : IShellProxy, IDisposable
 
     public Task SelectContentAsync(string segmentName)
     {
-        if (_navigationTarget is null)
+        if (_navigationTarget is default(string))
         {
             throw new NotSupportedException("SelectContentAsync is not supported outside of a navigation batch");
         }

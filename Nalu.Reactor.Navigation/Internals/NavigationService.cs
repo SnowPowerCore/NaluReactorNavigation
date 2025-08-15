@@ -44,7 +44,7 @@ internal partial class NavigationService : INavigationService, IDisposable
             (Configuration.LeakDetectorState == NavigationLeakDetectorState.EnabledWithDebugger && Debugger.IsAttached)
             || Configuration.LeakDetectorState == NavigationLeakDetectorState.Enabled;
 
-        _leakDetector = trackLeaks ? new LeakDetector() : null;
+        _leakDetector = trackLeaks ? new LeakDetector() : default;
 
         void NavigateBack()
         {
@@ -179,7 +179,7 @@ internal partial class NavigationService : INavigationService, IDisposable
 
         var navigationServiceProvider = serviceScope.ServiceProvider.GetRequiredService<INavigationServiceProviderInternal>();
 
-        if (parentPage is not null && PageNavigationContext.Get(parentPage) is { ServiceScope: { } parentScope })
+        if (parentPage is not default(MauiReactor.Component) && PageNavigationContext.Get(parentPage) is { ServiceScope: { } parentScope })
         {
             var parentNavigationServiceProvider = parentScope.ServiceProvider.GetRequiredService<INavigationServiceProviderInternal>();
             navigationServiceProvider.SetParent(parentNavigationServiceProvider);
@@ -188,7 +188,7 @@ internal partial class NavigationService : INavigationService, IDisposable
         var reactorComponent = (MauiReactor.Component)serviceScope.ServiceProvider.GetRequiredService(pageType);
         navigationServiceProvider.SetContextPage(reactorComponent);
 
-        var isRoot = parentPage is null;
+        var isRoot = parentPage is default(MauiReactor.Component);
         ConfigureBackButtonBehavior(reactorComponent, isRoot);
 
         var pageContext = new PageNavigationContext(serviceScope);
@@ -202,14 +202,14 @@ internal partial class NavigationService : INavigationService, IDisposable
     {
         var backButtonImage = isRoot ? Configuration.MenuImage : Configuration.BackImage;
 
-        if (backButtonImage is null && isRoot)
+        if (backButtonImage is default(ImageSource) && isRoot)
         {
             return;
         }
 
         var backButtonBehavior = new BackButtonBehavior();
 
-        if (backButtonImage is not null)
+        if (backButtonImage is not default(ImageSource))
         {
             backButtonBehavior.IconOverride ??= backButtonImage;
         }
@@ -225,11 +225,11 @@ internal partial class NavigationService : INavigationService, IDisposable
     private async Task<bool> ExecuteRelativeNavigationAsync(
         INavigationInfo navigation,
         HashSet<object> disposeBag,
-        IShellSectionProxy? section = null,
-        List<NavigationStackPage>? stack = null,
+        IShellSectionProxy? section = default,
+        List<NavigationStackPage>? stack = default,
         bool sendAppearingToTarget = true,
         bool ignoreGuards = false,
-        Func<Task>? onCheckingGuardAsync = null
+        Func<Task>? onCheckingGuardAsync = default
     )
     {
         if (navigation.Count == 0)
@@ -254,7 +254,7 @@ internal partial class NavigationService : INavigationService, IDisposable
         {
             var segment = navigation[i];
             var stackPage = stack[^1];
-            var propsDel = i == navigationCount - 1 ? navigation.PropsDelegate : null;
+            var propsDel = i == navigationCount - 1 ? navigation.PropsDelegate : default;
             var isPop = segment.SegmentName == NavigationPop.PopRoute;
 
             if (isPop)
@@ -263,7 +263,7 @@ internal partial class NavigationService : INavigationService, IDisposable
 
                 if (isGuarded)
                 {
-                    if (onCheckingGuardAsync is not null)
+                    if (onCheckingGuardAsync is not default(Func<Task>))
                     {
                         await onCheckingGuardAsync().ConfigureAwait(true);
                     }
@@ -372,7 +372,7 @@ internal partial class NavigationService : INavigationService, IDisposable
 
                 contentsToLeave = currentItem.Sections
                     .SelectMany(section => section.Contents)
-                    .Where(content => content.Page is not null)
+                    .Where(content => content.Page is not default(Page))
                     .OrderByDescending(content => content.Parent == currentSection)
                     .ThenBy(content => content.Parent.SegmentName)
                     .ThenByDescending(content => content == currentContent)
@@ -391,7 +391,7 @@ internal partial class NavigationService : INavigationService, IDisposable
                 leaveMode = ContentLeaveMode.Destroy;
 
                 contentsToLeave = currentSection.Contents
-                    .Where(content => content.Page is not null)
+                    .Where(content => content.Page is not default(Page))
                     .OrderByDescending(content => content == currentContent)
                     .ToList();
             }
@@ -509,7 +509,7 @@ internal partial class NavigationService : INavigationService, IDisposable
         // Send entering
         var (targetComponent, targetContentPage) = targetContent.GetOrCreateContent();
         var targetIsShellContent = navigation.Count == 1;
-        var intent = targetIsShellContent ? navigation.PropsDelegate : null;
+        var intent = targetIsShellContent ? navigation.PropsDelegate : default;
         await NavigationHelper.SendEnteringAsync(ShellProxy, targetComponent, Configuration).ConfigureAwait(true);
         await ShellProxy.SelectContentAsync(targetContent.SegmentName).ConfigureAwait(true);
 
@@ -675,7 +675,7 @@ internal partial class NavigationService : INavigationService, IDisposable
         string requestedNavigation;
         string targetState;
 
-        var segments = navigation.Select(s => s.Type != null ? NavigationHelper.GetPageType(s.Type).Name : s.SegmentName).ToArray();
+        var segments = navigation.Select(s => s.Type is not default(Type) ? NavigationHelper.GetPageType(s.Type).Name : s.SegmentName).ToArray();
 
         if (navigation.IsAbsolute)
         {

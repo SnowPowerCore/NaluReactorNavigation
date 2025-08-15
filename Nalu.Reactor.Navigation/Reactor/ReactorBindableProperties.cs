@@ -6,6 +6,6 @@ public static class ReactorBindableProperties
         "PageComponentInstance",
         typeof(MauiReactor.Component),
         typeof(ReactorBindableProperties),
-        null
+        default(MauiReactor.Component)
     );
 }

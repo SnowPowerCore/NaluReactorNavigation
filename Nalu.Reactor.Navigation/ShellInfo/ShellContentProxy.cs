@@ -34,7 +34,7 @@ internal class ShellContentProxy : IShellContentProxy
 
     public void DestroyContent()
     {
-        _content?.SetValue(ReactorBindableProperties.PageComponentInstanceProperty, null);
+        _content?.SetValue(ReactorBindableProperties.PageComponentInstanceProperty, default);
 
         if (Page is not { } page)
         {
@@ -47,9 +47,9 @@ internal class ShellContentProxy : IShellContentProxy
             PageNavigationContext.Dispose(pageComponent);
             var navContextProp = (PageNavigationContext)page.GetValue(PageNavigationContext.NavigationContextProperty);
             navContextProp?.Dispose();
-            page.SetValue(PageNavigationContext.NavigationContextProperty, null);
-            page.SetValue(ReactorBindableProperties.PageComponentInstanceProperty, null);
+            page.SetValue(PageNavigationContext.NavigationContextProperty, default);
+            page.SetValue(ReactorBindableProperties.PageComponentInstanceProperty, default);
         }
-        _shellContentCacheProperty.SetValue(_content, null);
+        _shellContentCacheProperty.SetValue(_content, default);
     }
 }

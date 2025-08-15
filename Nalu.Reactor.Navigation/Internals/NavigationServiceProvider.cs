@@ -38,7 +38,7 @@ internal sealed partial class NavigationServiceProvider : INavigationServiceProv
             }
         }
 
-        _parent = null;
-        _page = null;
+        _parent = default;
+        _page = default;
     }
 }

@@ -21,7 +21,7 @@ public partial class NavigationSegment : BindableObject, INavigationSegment
         {
             var route = (string?) newvalue;
 
-            if (route is not null)
+            if (route is not default(string))
             {
                 if (route.Contains('/'))
                 {

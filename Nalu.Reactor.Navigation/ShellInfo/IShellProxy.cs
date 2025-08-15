@@ -6,7 +6,7 @@ internal interface IShellProxy
     string State { get; }
     bool BeginNavigation();
     bool ProposeNavigation(INavigationInfo navigation);
-    Task CommitNavigationAsync(Action? completeAction = null);
+    Task CommitNavigationAsync(Action? completeAction = default);
     IShellItemProxy CurrentItem { get; }
     IReadOnlyList<IShellItemProxy> Items { get; }
     Color GetToolbarIconColor(Page page);

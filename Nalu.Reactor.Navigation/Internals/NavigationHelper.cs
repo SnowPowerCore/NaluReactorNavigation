@@ -57,7 +57,7 @@ internal static class NavigationHelper
         return ValueTask.CompletedTask;
     }
 
-    public static ValueTask SendAppearingAsync(IShellProxy shell, MauiReactor.Component pageComponent, INavigationConfiguration configuration, Action<object> propsDelOnAppearing = null)
+    public static ValueTask SendAppearingAsync(IShellProxy shell, MauiReactor.Component pageComponent, INavigationConfiguration configuration, Action<object> propsDelOnAppearing = default)
     {
         var context = PageNavigationContext.Get(pageComponent);
 

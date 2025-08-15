@@ -21,7 +21,7 @@ internal sealed partial class PageNavigationContext : IDisposable
         "PageNavigationContext",
         typeof(PageNavigationContext),
         typeof(PageNavigationContext),
-        null
+        default(PageNavigationContext)
     );
 
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_attachedProperties")]
@@ -31,7 +31,7 @@ internal sealed partial class PageNavigationContext : IDisposable
     {
         var pageNavigationContext = (PageNavigationContext)GetAttachedPropertiesField(page).GetValueOrDefault(NavigationContextProperty);
 #pragma warning disable IDE0270
-        if (pageNavigationContext is null)
+        if (pageNavigationContext is default(PageNavigationContext))
 #pragma warning restore IDE0270
         {
             throw new InvalidOperationException("Cannot navigate to a page not created by Nalu navigation.");
@@ -49,12 +49,12 @@ internal sealed partial class PageNavigationContext : IDisposable
     {
         var context = Get(page);
         context.Dispose();
-        Set(page, null);
+        Set(page, default);
     }
 
     public void Dispose()
     {
         _serviceScope?.Dispose();
-        _serviceScope = null;
+        _serviceScope = default;
     }
 }

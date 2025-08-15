@@ -40,11 +40,11 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
         UpdateCurrentContent();
     }
 
-    public IEnumerable<NavigationStackPage> GetNavigationStack(IServiceProvider serviceProvider, IShellContentProxy? content = null)
+    public IEnumerable<NavigationStackPage> GetNavigationStack(IServiceProvider serviceProvider, IShellContentProxy? content = default)
     {
         content ??= CurrentContent;
 
-        if (content.Page is null)
+        if (content.Page is default(Page))
         {
             yield break;
         }
@@ -65,7 +65,7 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
 
         foreach (var stackPage in navigation.NavigationStack)
         {
-            if (stackPage is not null)
+            if (stackPage is not default(Page))
             {
                 var segmentName = NavigationSegmentAttribute.GetSegmentName(stackPage.GetType());
                 route.Append('/');
@@ -81,7 +81,7 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
 
         foreach (var stackPage in navigation.ModalStack)
         {
-            if (stackPage is not null)
+            if (stackPage is not default(Page))
             {
                 var segmentName = NavigationSegmentAttribute.GetSegmentName(stackPage.GetType());
                 route.Append('/');
@@ -128,7 +128,7 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
         // When the section is empty or has no visible items, we cannot determine the current content.
         var currentSegmentName = (_section.CurrentItem ?? _section.Items.FirstOrDefault())?.Route;
 
-        if (currentSegmentName is not null)
+        if (currentSegmentName is not default(string))
         {
             _currentContent = Contents.FirstOrDefault(c => c.SegmentName == currentSegmentName);
         }

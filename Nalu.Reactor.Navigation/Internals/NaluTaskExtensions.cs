@@ -8,7 +8,7 @@ namespace Nalu.Internals;
 [SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "Proven safe in MAUI")]
 internal static class NaluTaskExtensions
 {
-    public static async void FireAndForget<TResult>(this Task<TResult> task, Action<Exception>? errorCallback = null)
+    public static async void FireAndForget<TResult>(this Task<TResult> task, Action<Exception>? errorCallback = default)
     {
         TResult? result = default;
 
@@ -25,7 +25,7 @@ internal static class NaluTaskExtensions
         }
     }
 
-    public static async void FireAndForget(this Task task, Action<Exception>? errorCallback = null)
+    public static async void FireAndForget(this Task task, Action<Exception>? errorCallback = default)
     {
         try
         {
@@ -40,10 +40,10 @@ internal static class NaluTaskExtensions
         }
     }
 
-    public static void FireAndForget(this Task task, ILogger? logger, [CallerMemberName] string? callerName = null) =>
+    public static void FireAndForget(this Task task, ILogger? logger, [CallerMemberName] string? callerName = default) =>
         task.FireAndForget(ex => Log(logger, ex, callerName));
 
-    public static void FireAndForget<T>(this Task task, T? viewHandler, [CallerMemberName] string? callerName = null)
+    public static void FireAndForget<T>(this Task task, T? viewHandler, [CallerMemberName] string? callerName = default)
         where T : IElementHandler =>
         task.FireAndForget(ex => Log(viewHandler?.CreateLogger<T>(), ex, callerName));
 

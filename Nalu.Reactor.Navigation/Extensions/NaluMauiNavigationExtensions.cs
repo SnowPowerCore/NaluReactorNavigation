@@ -75,6 +75,6 @@ public static class NaluMauiNavigationExtensions
     private static HashSet<Page> GetNavigationStack(INavigation navigation) =>
         navigation.NavigationStack
             .Concat(navigation.ModalStack)
-            .Where(p => p is not null)
+            .Where(p => p is not default(Page))
             .ToHashSet();
 }

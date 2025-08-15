@@ -14,7 +14,7 @@ public class NavigationPop : INavigationSegment
     public string SegmentName => PopRoute;
 
     /// <inheritdoc cref="INavigationSegment.Type" />
-    public Type? Type => null;
+    public Type? Type => default;
 
     /// <inheritdoc cref="INavigationSegment.AssertValid" />
     public void AssertValid() { }

@@ -18,7 +18,7 @@ public abstract class Navigation : BindableObject, IList<INavigationSegment>, IN
         "PageType",
         typeof(Type),
         typeof(Navigation),
-        null,
+        default(Type),
         propertyChanged: PageTypePropertyChanged
     );
 
@@ -58,14 +58,14 @@ public abstract class Navigation : BindableObject, IList<INavigationSegment>, IN
     /// Creates a fluent <see cref="RelativeNavigation" /> builder.
     /// </summary>
     /// <param name="behavior">Applies a specific behavior to this navigation instead of using the default one.</param>
-    public static IRelativeNavigationInitialBuilder Relative(NavigationBehavior? behavior = null)
+    public static IRelativeNavigationInitialBuilder Relative(NavigationBehavior? behavior = default)
         => new RelativeNavigation(behavior);
 
     /// <summary>
     /// Creates a fluent <see cref="AbsoluteNavigation" /> builder.
     /// </summary>
     /// <param name="behavior">Applies a specific behavior to this navigation instead of using the default one.</param>
-    public static IAbsoluteNavigationInitialBuilder Absolute(NavigationBehavior? behavior = null)
+    public static IAbsoluteNavigationInitialBuilder Absolute(NavigationBehavior? behavior = default)
         => new AbsoluteNavigation(behavior);
 
     private readonly List<INavigationSegment> _list = new(4);
@@ -124,7 +124,7 @@ public abstract class Navigation : BindableObject, IList<INavigationSegment>, IN
     /// <inheritdoc />
     public override string ToString()
     {
-        if (PropsDelegate == null)
+        if (PropsDelegate is default(Action<object>))
         {
             return Path;
         }
@@ -226,7 +226,7 @@ public abstract class Navigation : BindableObject, IList<INavigationSegment>, IN
                 var navigationService = shell.NavigationService;
 
                 var pageType = NavigationHelper.GetPageType(type);
-                var component = navigationService.CreatePage(pageType, null);
+                var component = navigationService.CreatePage(pageType, default);
                 var page = MauiReactor.TemplateHost.Create(component).NativeElement;
                 page.SetValue(Reactor.ReactorBindableProperties.PageComponentInstanceProperty, component);
                 shellContent.SetValue(Reactor.ReactorBindableProperties.PageComponentInstanceProperty, component);

@@ -30,17 +30,17 @@ public static class NavigationExtensions
     {
         ArgumentNullException.ThrowIfNull(self);
 
-        if (other is null || other.Path != self.Path)
+        if (other is default(INavigationInfo) || other.Path != self.Path)
         {
             return false;
         }
 
-        if (other.PropsDelegate == null && self.PropsDelegate == null)
+        if (other.PropsDelegate is default(Action<object>) && self.PropsDelegate is default(Action<object>))
         {
             return true;
         }
 
-        if (other.PropsDelegate == null || self.PropsDelegate == null)
+        if (other.PropsDelegate is default(Action<object>) || self.PropsDelegate is default(Action<object>))
         {
             return false;
         }
@@ -64,16 +64,16 @@ public static class NavigationExtensions
     {
         ArgumentNullException.ThrowIfNull(self);
 
-        return other is not null &&
+        return other is not default(INavigationInfo) &&
                other.Path == self.Path &&
-               ((self.PropsDelegate == null && other.PropsDelegate == null) || (self.PropsDelegate is TIntent intent &&
+               ((self.PropsDelegate is default(Action<object>) && other.PropsDelegate is default(Action<object>)) || (self.PropsDelegate is TIntent intent &&
                                                                   other.PropsDelegate is TIntent otherIntent &&
                                                                   intentComparer(intent, otherIntent)));
     }
 
     private static IEqualityComparer GetIntentComparer(object? intent)
     {
-        if (intent is null)
+        if (intent is default(object))
         {
             return EqualityComparer<object>.Default;
         }
@@ -82,6 +82,6 @@ public static class NavigationExtensions
         var equalityComparerType = typeof(EqualityComparer<>).MakeGenericType(type);
         var defaultProperty = equalityComparerType.GetProperty(nameof(EqualityComparer<object>.Default), BindingFlags.Public | BindingFlags.Static);
 
-        return (IEqualityComparer) defaultProperty?.GetValue(null)!;
+        return (IEqualityComparer) defaultProperty?.GetValue(default)!;
     }
 }

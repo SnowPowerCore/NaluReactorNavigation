@@ -45,7 +45,7 @@ public class NavigationLifecycleEventArgs : EventArgs
         NavigationLifecycleEventType eventType,
         object target,
         NavigationLifecycleHandling handling = NavigationLifecycleHandling.Handled,
-        object? data = null
+        object? data = default
     )
     {
         EventType = eventType;

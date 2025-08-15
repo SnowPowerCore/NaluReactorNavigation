@@ -51,7 +51,7 @@ public partial class NaluShell : Shell, INaluShell, IDisposable
     {
         base.OnParentSet();
 
-        if (Parent is not null && !_initialized)
+        if (Parent is not default(Element) && !_initialized)
         {
             _shellProxy = new ShellProxy(this, NavigationService.ServiceProvider);
             _shellProxy.InitializeWithContent(RootPageRoute);
@@ -78,12 +78,12 @@ public partial class NaluShell : Shell, INaluShell, IDisposable
 #if WINDOWS || !(IOS || ANDROID || MACCATALYST)
         var backButtonBehavior = GetBackButtonBehavior(GetVisiblePage());
 
-        if (backButtonBehavior != null)
+        if (backButtonBehavior is not default(BackButtonBehavior))
         {
-            var command = backButtonBehavior.GetPropertyIfSet<ICommand>(BackButtonBehavior.CommandProperty, null!);
-            var commandParameter = backButtonBehavior.GetPropertyIfSet<object>(BackButtonBehavior.CommandParameterProperty, null!);
+            var command = backButtonBehavior.GetPropertyIfSet<ICommand>(BackButtonBehavior.CommandProperty, default!);
+            var commandParameter = backButtonBehavior.GetPropertyIfSet<object>(BackButtonBehavior.CommandParameterProperty, default!);
 
-            if (command != null)
+            if (command is not default(ICommand))
             {
                 command.Execute(commandParameter);
 
@@ -99,7 +99,7 @@ public partial class NaluShell : Shell, INaluShell, IDisposable
 
         var currentContent = CurrentItem?.CurrentItem;
 
-        if (currentContent != null && currentContent.Stack.Count > 1)
+        if (currentContent is not default(ShellSection) && currentContent.Stack.Count > 1)
         {
             DispatchNavigation(Nalu.Navigation.Relative().Pop());
 
@@ -127,7 +127,7 @@ public partial class NaluShell : Shell, INaluShell, IDisposable
         var currentUri = args.Current?.Location.OriginalString ?? string.Empty;
         
         if (!_initialized || // Shell initialization process
-            Handler is null || // Shell initialization process
+            Handler is default(IViewHandler) || // Shell initialization process
             string.IsNullOrEmpty(uri) || // An empty URI is very likely Android trying to background the app when on a root page and back button is pressed.
             CommunityToolkitPopupRegex().IsMatch(uri) || // CommunityToolkit popup navigation
             CommunityToolkitPopupRegex().IsMatch(currentUri) || // CommunityToolkit popup navigation
@@ -208,7 +208,7 @@ public partial class NaluShell : Shell, INaluShell, IDisposable
         // If the ShellContent relative to a stack page being removed does not have a page,
         // it means this can only be Nalu navigation cleaning up the stack after a cross-item navigation.
         // If that's not null, then check if any of the pages in the stack is marked for removal.
-        var isRemovingStackPages = shellContent.Page is null ||
+        var isRemovingStackPages = shellContent.Page is default(Page) ||
             shellSection.GetNavigationStack(NavigationService.ServiceProvider, shellContent).Any(stackPage =>
                 ShellSectionProxy.IsPageMarkedForRemoval(stackPage.PageComponent.ContainerPage));
 
@@ -227,7 +227,7 @@ public partial class NaluShell : Shell, INaluShell, IDisposable
             return scc.PresentedPage;
         }
 
-        return null;
+        return default;
     }
 
     [GeneratedRegex("^(D_FAULT_|IMPL_)")]

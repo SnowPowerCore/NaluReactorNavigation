@@ -8,7 +8,7 @@ public partial class DefaultNaluShell { }
 
 public partial class NaluReactorShell : Component
 {
-    private readonly IEnumerable<VisualNode> _children = [];
+    private IEnumerable<VisualNode> _children = [];
     private Nalu.NaluShell _nativeControl;
 
     public NaluReactorShell(params IEnumerable<VisualNode?>? children)
@@ -32,5 +32,7 @@ public partial class NaluReactorShell : Component
     {
         base.OnWillUnmount();
         _nativeControl?.Dispose();
+        _nativeControl = default;
+        _children = default;
     }
 }
