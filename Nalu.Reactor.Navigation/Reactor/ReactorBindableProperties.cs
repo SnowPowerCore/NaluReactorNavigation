@@ -4,8 +4,8 @@ public static class ReactorBindableProperties
 {
     public static readonly BindableProperty PageComponentInstanceProperty = BindableProperty.CreateAttached(
         "PageComponentInstance",
-        typeof(MauiReactor.Component),
+        typeof(WeakReference<MauiReactor.Component>),
         typeof(ReactorBindableProperties),
-        default(MauiReactor.Component)
+        default(WeakReference<MauiReactor.Component>)
     );
 }

@@ -26,7 +26,7 @@ public class ShellNaluReactorComponentRouteFactory : RouteFactory
             var page = pageComponent.NativeElement;
             page.SetValue(
                 Reactor.ReactorBindableProperties.PageComponentInstanceProperty,
-                component);
+                new WeakReference<MauiReactor.Component>(component));
             return (Element)page;
         }
         return default;

@@ -9,7 +9,7 @@ namespace Nalu;
 public interface INavigationServiceProvider : IServiceProvider, IDisposable
 {
     /// <summary>
-    /// Gets the <see cref="Page"/> instance which hosts this navigation service provider.
+    /// Gets the <see cref="MauiReactor.Component"/> instance which hosts this navigation service provider.
     /// </summary>
     MauiReactor.Component ContextPage { get; }
 

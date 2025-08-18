@@ -28,7 +28,9 @@ internal class ShellContentProxy : IShellContentProxy
     public (MauiReactor.Component, Page) GetOrCreateContent()
     {
         var page = ((IShellContentController)_content).GetOrCreateContent();
-        var pageComponent = (MauiReactor.Component)page.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+        var pageComponentWeakRef = (WeakReference<MauiReactor.Component>)page.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+        if (!pageComponentWeakRef.TryGetTarget(out var pageComponent))
+            return (default, page);
         return (pageComponent, page);
     }
 
@@ -41,8 +43,8 @@ internal class ShellContentProxy : IShellContentProxy
             return;
         }
 
-        var pageComponent = (MauiReactor.Component)page.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
-        if (pageComponent is not default(MauiReactor.Component))
+        var pageComponentWeakRef = (WeakReference<MauiReactor.Component>)page.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+        if (pageComponentWeakRef.TryGetTarget(out var pageComponent))
         {
             PageNavigationContext.Dispose(pageComponent);
             var navContextProp = (PageNavigationContext)page.GetValue(PageNavigationContext.NavigationContextProperty);

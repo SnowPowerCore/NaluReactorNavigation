@@ -429,7 +429,8 @@ internal partial class NavigationService : INavigationService, IDisposable
             foreach (var contentToLeave in sectionContentsToLeave)
             {
                 var navigationStack = contentToLeave.Parent.GetNavigationStack(ServiceProvider, contentToLeave).ToList();
-                var component = (MauiReactor.Component)contentToLeave.Content.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+                var componentWeakRef = (WeakReference<MauiReactor.Component>)contentToLeave.Content.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+                if (!componentWeakRef.TryGetTarget(out var component)) continue;
 
                 if (leaveMode == ContentLeaveMode.None)
                 {
