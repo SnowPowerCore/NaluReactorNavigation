@@ -229,8 +229,8 @@ public abstract class Navigation : BindableObject, IList<INavigationSegment>, IN
                 var component = navigationService.CreatePage(pageType, default);
                 var page = MauiReactor.TemplateHost.Create(component).NativeElement;
                 var link = new WeakReference<MauiReactor.Component>(component);
-                page.SetValue(Reactor.ReactorBindableProperties.PageComponentInstanceProperty, link);
-                shellContent.SetValue(Reactor.ReactorBindableProperties.PageComponentInstanceProperty, link);
+                page.SetValue(Reactor.ReactorBindableProperties.PageComponentReferenceProperty, link);
+                shellContent.SetValue(Reactor.ReactorBindableProperties.PageComponentReferenceProperty, link);
                 return page;
             }
         );

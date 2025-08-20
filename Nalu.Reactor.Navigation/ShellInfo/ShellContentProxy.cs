@@ -28,7 +28,7 @@ internal class ShellContentProxy : IShellContentProxy
     public (MauiReactor.Component, Page) GetOrCreateContent()
     {
         var page = ((IShellContentController)_content).GetOrCreateContent();
-        var pageComponentWeakRef = (WeakReference<MauiReactor.Component>)page.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+        var pageComponentWeakRef = (WeakReference<MauiReactor.Component>)page.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
         if (!pageComponentWeakRef.TryGetTarget(out var pageComponent))
             return (default, page);
         return (pageComponent, page);
@@ -36,21 +36,21 @@ internal class ShellContentProxy : IShellContentProxy
 
     public void DestroyContent()
     {
-        _content?.SetValue(ReactorBindableProperties.PageComponentInstanceProperty, default);
+        _content?.SetValue(ReactorBindableProperties.PageComponentReferenceProperty, default);
 
         if (Page is not { } page)
         {
             return;
         }
 
-        var pageComponentWeakRef = (WeakReference<MauiReactor.Component>)page.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+        var pageComponentWeakRef = (WeakReference<MauiReactor.Component>)page.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
         if (pageComponentWeakRef.TryGetTarget(out var pageComponent))
         {
             PageNavigationContext.Dispose(pageComponent);
             var navContextProp = (PageNavigationContext)page.GetValue(PageNavigationContext.NavigationContextProperty);
             navContextProp?.Dispose();
             page.SetValue(PageNavigationContext.NavigationContextProperty, default);
-            page.SetValue(ReactorBindableProperties.PageComponentInstanceProperty, default);
+            page.SetValue(ReactorBindableProperties.PageComponentReferenceProperty, default);
         }
         _shellContentCacheProperty.SetValue(_content, default);
     }

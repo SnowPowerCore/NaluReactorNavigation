@@ -51,7 +51,7 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
 
         var baseRoute = $"//{Parent.SegmentName}/{SegmentName}/{content.SegmentName}";
 
-        var componentWeakRef = (WeakReference<MauiReactor.Component>)content.Content.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+        var componentWeakRef = (WeakReference<MauiReactor.Component>)content.Content.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
         if (componentWeakRef.TryGetTarget(out var component))
             yield return new NavigationStackPage(baseRoute, content.SegmentName, component, false);
 
@@ -71,7 +71,7 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
                 route.Append('/');
                 route.Append(segmentName);
 
-                var pageComponentValueWeakRef = (WeakReference<MauiReactor.Component>)stackPage.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+                var pageComponentValueWeakRef = (WeakReference<MauiReactor.Component>)stackPage.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
                 if (pageComponentValueWeakRef.TryGetTarget(out var pageComponentValue))
                 {
                     yield return new NavigationStackPage(route.ToString(), segmentName, pageComponentValue, false);
@@ -87,7 +87,7 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
                 route.Append('/');
                 route.Append(segmentName);
 
-                var pageComponentValueWeakRef = (WeakReference<MauiReactor.Component>)stackPage.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+                var pageComponentValueWeakRef = (WeakReference<MauiReactor.Component>)stackPage.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
                 if (pageComponentValueWeakRef.TryGetTarget(out var pageComponentValue))
                 {
                     yield return new NavigationStackPage(route.ToString(), segmentName, pageComponentValue, true);

@@ -429,7 +429,7 @@ internal partial class NavigationService : INavigationService, IDisposable
             foreach (var contentToLeave in sectionContentsToLeave)
             {
                 var navigationStack = contentToLeave.Parent.GetNavigationStack(ServiceProvider, contentToLeave).ToList();
-                var componentWeakRef = (WeakReference<MauiReactor.Component>)contentToLeave.Content.GetValue(ReactorBindableProperties.PageComponentInstanceProperty);
+                var componentWeakRef = (WeakReference<MauiReactor.Component>)contentToLeave.Content.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
                 if (!componentWeakRef.TryGetTarget(out var component)) continue;
 
                 if (leaveMode == ContentLeaveMode.None)
@@ -623,7 +623,7 @@ internal partial class NavigationService : INavigationService, IDisposable
                 var contentPage = page.ContainerPage;
                 if (contentPage is not default(Page))
                 {
-                    contentPage.SetValue(ReactorBindableProperties.PageComponentInstanceProperty, default);
+                    contentPage.SetValue(ReactorBindableProperties.PageComponentReferenceProperty, default);
                     DisconnectHandlerHelper.DisconnectHandlers(contentPage);
                 }
                 PageNavigationContext.Dispose(page);
