@@ -1,5 +1,6 @@
-using System.Reflection;
+using System.Runtime.CompilerServices;
 using MauiReactor;
+using Nalu.Reactor;
 
 namespace Nalu;
 
@@ -20,7 +21,7 @@ public static class ReactorShellContentExtensions
     /// <code>
     /// ShellContent()
     ///     .Title("Home")
-    ///     .RenderContent<HomePage>(() => new HomePage())  // Self-contained - no .Set() needed
+    ///     .RenderContent<HomePage>(() => new HomePage())
     /// </code>
     /// </example>
     public static MauiReactor.ShellContent RenderContent<TPage>(
@@ -31,22 +32,28 @@ public static class ReactorShellContentExtensions
         ArgumentNullException.ThrowIfNull(shellContent);
         ArgumentNullException.ThrowIfNull(renderContent);
 
-        // Get the segment name for the page type (e.g., "HomePage" for class HomePage)
-        var segmentName = NavigationSegmentAttribute.GetSegmentName(typeof(TPage));
-
-        // Set Route by modifying the internal MauiReactor ShellContent wrapper's _route field
-        // This ensures Route is ready before ShellOnStructureChanged builds the _contentsBySegmentName dictionary
-        var shellContentWrapperType = shellContent.GetType();
-        var routeField = shellContentWrapperType.GetField("_route",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-        routeField?.SetValue(shellContent, segmentName);
-
         // Call MauiReactor's Set with Navigation.PageTypeProperty to trigger NaluShell's PageTypePropertyChanged
         // This will handle setting up DataTemplate, service scope, navigation context, and lifecycle hooks
         shellContent.Set(Navigation.PageTypeProperty, typeof(TPage));
 
-        // Call MauiReactor's built-in RenderContent with user's factory
-        // The PageTypePropertyChanged handler has already set up DataTemplate with NaluShell's service scope
-        return shellContent.RenderContent(renderContent);
+        // Create wrapper that manages component lifecycle during hot-reload
+        return shellContent.RenderContent(() =>
+        {
+#if DEBUG
+            var currentlyDisplayedShellContent = Microsoft.Maui.Controls.Shell.Current
+                .CurrentItem?.CurrentItem?.CurrentItem;
+            var pageComponentWeakRef = (WeakReference<Component>)currentlyDisplayedShellContent
+                .GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
+            if (pageComponentWeakRef?.TryGetTarget(out var existingComponent) == true)
+            {
+                Application.Current.Dispatcher
+                    .Dispatch(() => InvalidateComponent(existingComponent));
+            }
+#endif
+            return renderContent();
+        });
     }
+
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "InvalidateComponent")]
+    extern static void InvalidateComponent(Component c);
 }
