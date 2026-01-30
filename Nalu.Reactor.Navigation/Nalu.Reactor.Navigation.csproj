@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Label="Package">
-    <Product>Nalu.Reactor.Navigation</Product>
+    <Product>NaluNavigation.Reactor</Product>
     <Description>.NET MAUI developer utilities</Description>
-    <PackageTags>MAUI</PackageTags>
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageTags>MAUI, MauiReactor, Nalu, Nalu.Navigation</PackageTags>
     <RootNamespace>Nalu</RootNamespace>
     <NoWarn>NU5129</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -25,7 +26,7 @@
 
   <ItemGroup>
 		<PackageReference Include="Reactor.Maui" Version="3.0.*" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.90" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.*" />
   </ItemGroup>
 
   <ItemGroup>
