@@ -2,7 +2,7 @@
   <PropertyGroup Label="Package">
     <PackageId>NaluNavigation.Reactor</PackageId>
     <Description>.NET MAUI developer utilities</Description>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <PackageTags>MAUI, .NET MAUI, MauiReactor, Nalu, Nalu.Navigation, Navigation</PackageTags>
     <RootNamespace>Nalu</RootNamespace>
     <NoWarn>NU5129</NoWarn>
