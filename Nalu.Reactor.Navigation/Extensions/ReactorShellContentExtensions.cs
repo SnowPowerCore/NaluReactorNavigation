@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using MauiReactor;
 using Nalu.Reactor;
@@ -40,36 +39,37 @@ public static class ReactorShellContentExtensions
         // Create wrapper that manages component lifecycle during hot-reload
         return shellContent.RenderContent(() =>
         {
-            if (HotReloadIsEnabled)
-            {
-                var currentlyDisplayedShellContent = Microsoft.Maui.Controls.Shell.Current
-                    .CurrentItem?.CurrentItem?.CurrentItem;
-                var pageComponentWeakRef = (WeakReference<Component>)currentlyDisplayedShellContent
-                    .GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
-                if (pageComponentWeakRef?.TryGetTarget(out var existingComponent) == true)
-                {
-                    Application.Current.Dispatcher.Dispatch(() => InvalidateComponent(existingComponent));
-                    
-                    foreach (var stackPage in existingComponent.Navigation.GetNavigationStack())
-                    {
-                        var stackPageComponentWeakRef = (WeakReference<Component>)stackPage
-                            .GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
-                        if (stackPageComponentWeakRef?.TryGetTarget(out var existingStackPageComponent) == true)
-                        {
-                            Application.Current.Dispatcher.Dispatch(() =>
-                                InvalidateComponent(existingStackPageComponent));
-                        }
-                    }
-                }
-            }
-            
+            TryTriggerHotReload();
+
             return renderContent();
         });
     }
 
-    [FeatureSwitchDefinition("Nalu.Navigation.Reactor.HotReload")]
-    public static bool HotReloadIsEnabled =>
-        AppContext.TryGetSwitch("Nalu.Navigation.Reactor.HotReload", out var isEnabled) && isEnabled;
+    private static void TryTriggerHotReload()
+    {
+        if (ReactorFeatureSwitches.HotReloadIsEnabled)
+        {
+            var currentlyDisplayedShellContent = Microsoft.Maui.Controls.Shell.Current
+                .CurrentItem?.CurrentItem?.CurrentItem;
+            var pageComponentWeakRef = (WeakReference<Component>)currentlyDisplayedShellContent
+                .GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
+            if (pageComponentWeakRef?.TryGetTarget(out var existingComponent) == true)
+            {
+                Application.Current.Dispatcher.Dispatch(() => InvalidateComponent(existingComponent));
+
+                foreach (var stackPage in existingComponent.Navigation.GetNavigationStack())
+                {
+                    var stackPageComponentWeakRef = (WeakReference<Component>)stackPage
+                        .GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
+                    if (stackPageComponentWeakRef?.TryGetTarget(out var existingStackPageComponent) == true)
+                    {
+                        Application.Current.Dispatcher.Dispatch(() =>
+                            InvalidateComponent(existingStackPageComponent));
+                    }
+                }
+            }
+        }
+    }
 
     [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "InvalidateComponent")]
     extern static void InvalidateComponent(Component c);
