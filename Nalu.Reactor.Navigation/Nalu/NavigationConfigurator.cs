@@ -75,7 +75,7 @@ public class NavigationConfigurator : INavigationConfiguration
     /// <typeparam name="TPage">Type of the page.</typeparam>
     public NavigationConfigurator SetRoot<TPage>() where TPage : MauiReactor.Component
     {
-        _services.AddScoped<TPage>();
+        AddPage<TPage>();
         _services.AddScoped(sp => new RootTypeModel { Type = typeof(TPage) });
 
         return this;
