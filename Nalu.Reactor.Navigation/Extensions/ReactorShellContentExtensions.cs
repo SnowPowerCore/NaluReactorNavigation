@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using MauiReactor;
 using Nalu.Reactor;
+using Page = Microsoft.Maui.Controls.Page;
 
 namespace Nalu;
 
@@ -46,8 +47,18 @@ public static class ReactorShellContentExtensions
                 .GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
             if (pageComponentWeakRef?.TryGetTarget(out var existingComponent) == true)
             {
-                Application.Current.Dispatcher
-                    .Dispatch(() => InvalidateComponent(existingComponent));
+                Application.Current.Dispatcher.Dispatch(() => InvalidateComponent(existingComponent));
+                
+                foreach (var stackPage in GetNavigationStack(existingComponent.Navigation))
+                {
+                    var stackPageComponentWeakRef = (WeakReference<Component>)stackPage
+                        .GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
+                    if (stackPageComponentWeakRef?.TryGetTarget(out var existingStackPageComponent) == true)
+                    {
+                        Application.Current.Dispatcher.Dispatch(() =>
+                            InvalidateComponent(existingStackPageComponent));
+                    }
+                }
             }
 #endif
             return renderContent();
@@ -56,4 +67,10 @@ public static class ReactorShellContentExtensions
 
     [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "InvalidateComponent")]
     extern static void InvalidateComponent(Component c);
+
+    private static HashSet<Page> GetNavigationStack(INavigation navigation) =>
+        navigation.NavigationStack
+            .Concat(navigation.ModalStack)
+            .Where(p => p is not default(Page))
+            .ToHashSet();
 }
