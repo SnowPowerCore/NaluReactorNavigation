@@ -49,7 +49,7 @@ public static class ReactorShellContentExtensions
             {
                 Application.Current.Dispatcher.Dispatch(() => InvalidateComponent(existingComponent));
                 
-                foreach (var stackPage in GetNavigationStack(existingComponent.Navigation))
+                foreach (var stackPage in existingComponent.Navigation.GetNavigationStack())
                 {
                     var stackPageComponentWeakRef = (WeakReference<Component>)stackPage
                         .GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
@@ -67,10 +67,4 @@ public static class ReactorShellContentExtensions
 
     [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "InvalidateComponent")]
     extern static void InvalidateComponent(Component c);
-
-    private static HashSet<Page> GetNavigationStack(INavigation navigation) =>
-        navigation.NavigationStack
-            .Concat(navigation.ModalStack)
-            .Where(p => p is not default(Page))
-            .ToHashSet();
 }

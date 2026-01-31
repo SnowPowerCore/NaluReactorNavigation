@@ -1,5 +1,7 @@
 // ReSharper disable once CheckNamespace
 
+using Nalu;
+
 namespace Microsoft.Maui;
 
 /// <summary>
@@ -16,7 +18,7 @@ public static class NaluMauiNavigationExtensions
     {
         var navigationStacks = shell.Items
                                     .SelectMany(item => item.Items)
-                                    .SelectMany(section => GetNavigationStack(section.Navigation))
+                                    .SelectMany(section => section.Navigation.GetNavigationStack())
                                     .ToHashSet();
 
         shell.Navigated += ShellOnNavigated;
@@ -29,7 +31,7 @@ public static class NaluMauiNavigationExtensions
         {
             var newNavigationStacks = shell.Items
                 .SelectMany(item => item.Items)
-                .SelectMany(section => GetNavigationStack(section.Navigation))
+                .SelectMany(section => section.Navigation.GetNavigationStack())
                 .ToHashSet();
 
             var pagesToDispose = navigationStacks.Except(newNavigationStacks);
@@ -51,14 +53,14 @@ public static class NaluMauiNavigationExtensions
     /// <param name="navigationPage">The navigation page instance.</param>
     public static NavigationPage ConfigureForPageDisposal(this NavigationPage navigationPage)
     {
-        var navigationStack = GetNavigationStack(navigationPage.Navigation);
+        var navigationStack = navigationPage.Navigation.GetNavigationStack();
         navigationPage.NavigatedTo += NavigationPageOnNavigatedTo;
 
         return navigationPage;
 
         void NavigationPageOnNavigatedTo(object? sender, NavigatedToEventArgs e)
         {
-            var newNavigationStack = GetNavigationStack(navigationPage.Navigation);
+            var newNavigationStack = navigationPage.Navigation.GetNavigationStack();
             var pagesToDispose = navigationStack.Except(newNavigationStack);
             navigationStack = newNavigationStack;
 
@@ -71,10 +73,4 @@ public static class NaluMauiNavigationExtensions
             }
         }
     }
-
-    private static HashSet<Page> GetNavigationStack(INavigation navigation) =>
-        navigation.NavigationStack
-            .Concat(navigation.ModalStack)
-            .Where(p => p is not default(Page))
-            .ToHashSet();
 }
