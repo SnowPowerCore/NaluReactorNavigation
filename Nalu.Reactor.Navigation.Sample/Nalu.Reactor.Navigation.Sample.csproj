@@ -76,7 +76,11 @@
 	<PackageReference Include="Microsoft.Extensions.Logging.EventSource" Version="9.0.12" />
 	<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.*" />
 	<PackageReference Include="Reactor.Maui" Version="3.0.*" />
-	<PackageReference Include="NaluNavigation.Reactor" Version="1.0.2" />
+	<!-- <PackageReference Include="NaluNavigation.Reactor" Version="1.0.2" /> -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nalu.Reactor.Navigation\Nalu.Reactor.Navigation.csproj" />
   </ItemGroup>
 
 </Project>

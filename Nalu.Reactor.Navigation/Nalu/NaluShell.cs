@@ -24,8 +24,6 @@ public partial class NaluShell : Shell, INaluShell, IDisposable
 
     internal NavigationService NavigationService { get; private set; }
 
-    internal IServiceProvider ServiceProvider { get; private set; }
-
     IShellProxy INaluShell.ShellProxy => _shellProxy ?? throw new InvalidOperationException("The shell info is not available yet.");
 
     public void Initialize(INavigationService navigationService, string rootPageRoute)
@@ -127,7 +125,7 @@ public partial class NaluShell : Shell, INaluShell, IDisposable
         var currentUri = args.Current?.Location.OriginalString ?? string.Empty;
         
         if (!_initialized || // Shell initialization process
-            Handler is default(IViewHandler) || // Shell initialization process
+            Handler is null || // Shell initialization process
             string.IsNullOrEmpty(uri) || // An empty URI is very likely Android trying to background the app when on a root page and back button is pressed.
             CommunityToolkitPopupRegex().IsMatch(uri) || // CommunityToolkit popup navigation
             CommunityToolkitPopupRegex().IsMatch(currentUri) || // CommunityToolkit popup navigation
