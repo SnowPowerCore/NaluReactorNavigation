@@ -48,6 +48,12 @@ internal sealed partial class PageNavigationContext : IDisposable
     public static void Dispose(MauiReactor.Component page)
     {
         var context = Get(page);
+        if (context is default(PageNavigationContext))
+            return;
+        var navigationServiceProvider = context.ServiceScope.ServiceProvider
+           .GetRequiredService<INavigationServiceProviderInternal>();
+        navigationServiceProvider.SetContextPage(default);
+        navigationServiceProvider.SetParent(default);
         context.Dispose();
         Set(page, default);
     }

@@ -108,6 +108,7 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
         while (count-- > 0)
         {
             var pageToRemove = navigation.NavigationStack[^1];
+            pageToRemove.SetValue(ReactorBindableProperties.PageComponentReferenceProperty, default);
             MarkPageForRemoval(pageToRemove);
             navigation.RemovePage(pageToRemove);
         }

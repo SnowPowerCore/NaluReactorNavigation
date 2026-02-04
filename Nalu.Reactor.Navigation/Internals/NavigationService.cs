@@ -620,26 +620,34 @@ internal partial class NavigationService : INavigationService, IDisposable
         {
             case MauiReactor.Component page:
             {
-                var contentPage = page.ContainerPage;
-                if (contentPage is not default(Page))
+                if (page.ContainerPage is not default(Page))
                 {
-                    contentPage.SetValue(ReactorBindableProperties.PageComponentReferenceProperty, default);
-                    DisconnectHandlerHelper.DisconnectHandlers(contentPage);
+                    DestroyPageHostComponent(page);
+                    page.ContainerPage.SetValue(ReactorBindableProperties.PageComponentReferenceProperty, default);
+                    DisconnectHandlerHelper.DisconnectHandlers(page.ContainerPage);
                 }
                 PageNavigationContext.Dispose(page);
-                _leakDetector?.Track(contentPage);
+                DestroyPageComponent(page);
+                _leakDetector?.Track(page.ContainerPage);
+                _leakDetector?.Track(page);
 
                 break;
             }
 
             case IShellContentProxy contentProxy:
             {
-                var contentPage = contentProxy.Page;
-                if (contentPage is not default(Page))
+                if (contentProxy.Page is not default(Page))
                 {
-                    DisconnectHandlerHelper.DisconnectHandlers(contentPage);
+                    var component = (WeakReference<MauiReactor.Component>?)contentProxy.Page.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
+                    var componentTarget = default(MauiReactor.Component);
+                    if (component is not default(WeakReference<MauiReactor.Component>) && component.TryGetTarget(out componentTarget))
+                    {
+                        DestroyPageHostComponent(componentTarget);
+                    }
+                    DisconnectHandlerHelper.DisconnectHandlers(contentProxy.Page);
                     contentProxy.DestroyContent();
-                    _leakDetector?.Track(contentPage);
+                    DestroyPageComponent(componentTarget);
+                    _leakDetector?.Track(contentProxy.Page);
                 }
 
                 break;
@@ -648,7 +656,7 @@ internal partial class NavigationService : INavigationService, IDisposable
             case IShellSectionProxy sectionProxy:
             {
                 sectionProxy.RemoveStackPages();
-
+                
                 break;
             }
 
@@ -657,6 +665,39 @@ internal partial class NavigationService : INavigationService, IDisposable
                 throw new InvalidNavigationException("Trying to dispose an unknown object.");
             }
         }
+    }
+
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_containerPage")]
+    private extern static ref Page? GetContainerPageField(MauiReactor.Component component);
+
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_root")]
+    private extern static ref MauiReactor.VisualNode? GetRootField(MauiReactor.TemplateHost component);
+
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "get_Parent")]
+    extern static MauiReactor.VisualNode? GetParentProperty(MauiReactor.VisualNode c);
+
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "Reset")]
+    extern static void ResetMethod(MauiReactor.VisualNode c);
+
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "Unmount")]
+    extern static void UnmountMethod(MauiReactor.VisualNode c);
+
+    private static void DestroyPageHostComponent(MauiReactor.Component component)
+    {
+        if (component is default(MauiReactor.Component))
+            return;
+        var p = GetParentProperty(component);
+        var root = GetRootField((MauiReactor.TemplateHost)p);
+        (root as MauiReactor.IHostElement)?.Stop();
+    }
+
+    private static void DestroyPageComponent(MauiReactor.VisualNode component)
+    {
+        if (component is default(MauiReactor.VisualNode))
+            return;
+        UnmountMethod(component);
+        ResetMethod(component);
+        GetContainerPageField((MauiReactor.Component)component) = default;
     }
 
     private static INavigationInfo PopTimes(int popCount)

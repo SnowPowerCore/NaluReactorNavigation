@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nalu.Reactor.Navigation", "Nalu.Reactor.Navigation\Nalu.Reactor.Navigation.csproj", "{A7B70350-9C54-4061-A4E0-E4D4B5BD86AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nalu.Reactor.Navigation.Sample", "Nalu.Reactor.Navigation.Sample\Nalu.Reactor.Navigation.Sample.csproj", "{C462361D-C1F5-8EF5-AA3C-105501E3960D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,19 @@ Global
 		{A7B70350-9C54-4061-A4E0-E4D4B5BD86AA}.Release|x64.Build.0 = Release|Any CPU
 		{A7B70350-9C54-4061-A4E0-E4D4B5BD86AA}.Release|x86.ActiveCfg = Release|Any CPU
 		{A7B70350-9C54-4061-A4E0-E4D4B5BD86AA}.Release|x86.Build.0 = Release|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Debug|x64.Build.0 = Debug|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Debug|x86.Build.0 = Debug|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Release|x64.ActiveCfg = Release|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Release|x64.Build.0 = Release|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C462361D-C1F5-8EF5-AA3C-105501E3960D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
