@@ -231,6 +231,29 @@ public abstract class Navigation : BindableObject, IList<INavigationSegment>, IN
                 var link = new WeakReference<MauiReactor.Component>(component);
                 page.SetValue(Reactor.ReactorBindableProperties.PageComponentReferenceProperty, link);
                 shellContent.SetValue(Reactor.ReactorBindableProperties.PageComponentReferenceProperty, link);
+                if (page is Element elementPage && shellContent is Element elementShellContent)
+                {
+                    elementPage.HandlerChanged += OnHandlerChanged;
+                    elementShellContent.HandlerChanged += OnHandlerChanged;
+
+                    void OnHandlerChanged(object? sender, EventArgs e)
+                    {
+                        if (elementPage is not default(Element)
+                            && elementShellContent is not default(Element)
+                            && (!elementPage.Handler?.IsConnected() ?? true))
+                        {
+                            elementPage.HandlerChanged -= OnHandlerChanged;
+                            elementShellContent.HandlerChanged -= OnHandlerChanged;
+                            elementPage.SetValue(
+                                Reactor.ReactorBindableProperties.PageComponentReferenceProperty,
+                                default);
+                            elementShellContent.SetValue(
+                                Reactor.ReactorBindableProperties.PageComponentReferenceProperty,
+                                default);
+                            (page as MauiReactor.IHostElement)?.Stop();
+                        }
+                    };
+                }
                 return page;
             }
         );

@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using Nalu.Internals;
 // ReSharper disable once RedundantUsingDirective
 using System.Windows.Input;
+using Nalu.Internals;
 
 namespace Nalu;
 

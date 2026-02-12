@@ -44,8 +44,9 @@ internal class ShellContentProxy : IShellContentProxy
         }
 
         var pageComponentWeakRef = (WeakReference<MauiReactor.Component>)page.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
-        if (pageComponentWeakRef.TryGetTarget(out var pageComponent))
+        if (pageComponentWeakRef?.TryGetTarget(out var pageComponent) ?? false)
         {
+            (pageComponent as MauiReactor.IHostElement)?.Stop();
             PageNavigationContext.Dispose(pageComponent);
             var navContextProp = (PageNavigationContext)page.GetValue(PageNavigationContext.NavigationContextProperty);
             navContextProp?.Dispose();

@@ -67,15 +67,17 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
         {
             if (stackPage is not default(Page))
             {
-                var segmentName = NavigationSegmentAttribute.GetSegmentName(stackPage.GetType());
-                route.Append('/');
-                route.Append(segmentName);
-
                 var pageComponentValueWeakRef = (WeakReference<MauiReactor.Component>)stackPage.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
-                if (pageComponentValueWeakRef.TryGetTarget(out var pageComponentValue))
+                if (!pageComponentValueWeakRef.TryGetTarget(out var pageComponentValue))
                 {
-                    yield return new NavigationStackPage(route.ToString(), segmentName, pageComponentValue, false);
+                    continue;
                 }
+
+                var segmentName = NavigationSegmentAttribute.GetSegmentName(pageComponentValue.GetType());
+                route.Append('/')
+                    .Append(segmentName);
+
+                yield return new NavigationStackPage(route.ToString(), segmentName, pageComponentValue, false);
             }
         }
 
@@ -83,15 +85,17 @@ internal sealed partial class ShellSectionProxy : IShellSectionProxy, IDisposabl
         {
             if (stackPage is not default(Page))
             {
-                var segmentName = NavigationSegmentAttribute.GetSegmentName(stackPage.GetType());
-                route.Append('/');
-                route.Append(segmentName);
-
                 var pageComponentValueWeakRef = (WeakReference<MauiReactor.Component>)stackPage.GetValue(ReactorBindableProperties.PageComponentReferenceProperty);
-                if (pageComponentValueWeakRef.TryGetTarget(out var pageComponentValue))
+                if (!pageComponentValueWeakRef.TryGetTarget(out var pageComponentValue))
                 {
-                    yield return new NavigationStackPage(route.ToString(), segmentName, pageComponentValue, true);
+                    continue;
                 }
+
+                var segmentName = NavigationSegmentAttribute.GetSegmentName(pageComponentValue.GetType());
+                route.Append('/')
+                    .Append(segmentName);
+
+                yield return new NavigationStackPage(route.ToString(), segmentName, pageComponentValue, true);
             }
         }
     }

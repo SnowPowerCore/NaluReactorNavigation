@@ -416,8 +416,7 @@ internal partial class NavigationService : INavigationService, IDisposable
         IList<IShellContentProxy> contentsToLeave,
         IShellContentProxy targetContent,
         ContentLeaveMode leaveMode,
-        bool ignoreGuards
-    )
+        bool ignoreGuards)
     {
         var shellProxy = ShellProxy;
         shellProxy.BeginNavigation();
@@ -602,9 +601,7 @@ internal partial class NavigationService : INavigationService, IDisposable
 
         try
         {
-            var result = await navigationFunc(initialState).ConfigureAwait(true);
-
-            return result;
+            return await navigationFunc(initialState).ConfigureAwait(true);
         }
         finally
         {
